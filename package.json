@@ -1,0 +1,12 @@
+{
+  "name": "vai-pricing-agent",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev:frontend",
+    "dev:backend": "npm --prefix frontend run dev:backend",
+    "build": "npm --prefix frontend run build",
+    "install:frontend": "npm --prefix frontend install"
+  }
+}

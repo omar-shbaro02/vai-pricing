@@ -1,0 +1,6 @@
+backend/.venv/
+backend/chroma/
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+.DS_Store

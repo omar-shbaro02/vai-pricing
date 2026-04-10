@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VAI Pricing Agent System Overview</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 16mm;
+    }
+
+    :root {
+      --blue: #3fa9f5;
+      --blue-deep: #0071bc;
+      --mint: #00a99d;
+      --green: #7ac943;
+      --orange: #ff931e;
+      --rose: #ff7bac;
+      --mist: #bdccd4;
+      --ink: #17324d;
+      --muted: #557086;
+      --line: rgba(23, 50, 77, 0.14);
+      --panel: #ffffff;
+      --soft: #f4f9fc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.4;
+      font-size: 11pt;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      page-break-after: always;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    .hero {
+      border: 1px solid rgba(63, 169, 245, 0.22);
+      border-radius: 20px;
+      padding: 18px 20px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 28%),
+        linear-gradient(135deg, rgba(63, 169, 245, 0.14), rgba(0, 169, 157, 0.1)),
+        linear-gradient(180deg, #ffffff, #f7fbfe);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(63, 169, 245, 0.14);
+      color: var(--blue-deep);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 8.5pt;
+      font-weight: 700;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    h1 {
+      margin-top: 10px;
+      font-size: 24pt;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: 14pt;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lede {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11pt;
+      max-width: 92%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: 14px 16px;
+    }
+
+    .panel.soft {
+      background: var(--soft);
+    }
+
+    .panel.blue {
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.16), transparent 26%),
+        linear-gradient(180deg, var(--blue) 0%, var(--blue-deep) 100%);
+      color: #fff;
+      border-color: rgba(63, 169, 245, 0.24);
+    }
+
+    .kpi {
+      border-radius: 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .kpi.blue { background: rgba(63, 169, 245, 0.1); border-color: rgba(63, 169, 245, 0.24); }
+    .kpi.green { background: rgba(122, 201, 67, 0.1); border-color: rgba(122, 201, 67, 0.24); }
+    .kpi.orange { background: rgba(255, 147, 30, 0.1); border-color: rgba(255, 147, 30, 0.24); }
+    .kpi.rose { background: rgba(255, 123, 172, 0.1); border-color: rgba(255, 123, 172, 0.24); }
+
+    .label {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 8.5pt;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .panel.blue .label {
+      color: rgba(255,255,255,0.76);
+    }
+
+    .kpi-value {
+      font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px;
+      background: #fff;
+      min-height: 94px;
+    }
+
+    .step:nth-child(1) { background: rgba(189, 204, 212, 0.14); }
+    .step:nth-child(2) { background: rgba(63, 169, 245, 0.1); }
+    .step:nth-child(3) { background: rgba(0, 169, 157, 0.1); }
+    .step:nth-child(4) { background: rgba(122, 201, 67, 0.1); }
+    .step:nth-child(5) { background: rgba(255, 147, 30, 0.1); }
+
+    .step .num {
+      color: var(--blue-deep);
+      font-weight: 800;
+      font-size: 9pt;
+      margin-bottom: 6px;
+    }
+
+    .small {
+      font-size: 9.5pt;
+      color: var(--muted);
+    }
+
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.8pt;
+    }
+
+    .tech-table td {
+      padding: 8px 10px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .tech-table tr:first-child td {
+      border-top: none;
+    }
+
+    .tech-table td:first-child {
+      width: 28%;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .footer-note {
+      margin-top: auto;
+      font-size: 8.8pt;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <div class="hero">
+      <div class="eyebrow">VAI Pricing Agent</div>
+      <h1>Pricing decision support for portfolio review, SKU diagnostics, and simulation.</h1>
+      <p class="lede">
+        The system combines workbook-based retail pricing data, business rules, simulation logic, and an analyst-facing
+        web interface to help teams review pricing opportunities, understand recommendation drivers, and test changes
+        before execution.
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="label">What The System Does</div>
+        <div class="stack">
+          <div>
+            <h2>1. Loads pricing workbooks and normalizes SKU data</h2>
+            <p class="small">Excel sheets are parsed into a consistent record structure including price, cost, margin floor, competitor prices, KVI flag, inventory, and source workbook signals.</p>
+          </div>
+          <div>
+            <h2>2. Generates recommendations at SKU level</h2>
+            <p class="small">The engine recommends increase, decrease, or hold by balancing market position, margin protection, demand sensitivity, and inventory context.</p>
+          </div>
+          <div>
+            <h2>3. Simulates commercial outcomes</h2>
+            <p class="small">Users can see projected volume change, expected units sold, revenue impact, margin impact, and projected margin at any proposed price.</p>
+          </div>
+          <div>
+            <h2>4. Supports analyst review and action</h2>
+            <p class="small">The frontend provides dashboard views, SKU detail pages, agent review prioritization, and an SKU Q&amp;A interface for explanation and follow-up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel blue">
+        <div class="label">Primary Outcomes</div>
+        <ul>
+          <li>Faster identification of margin risks and overpriced / underpriced SKUs</li>
+          <li>Consistent recommendation logic across the pricing queue</li>
+          <li>Transparent explanation of why a recommendation was made</li>
+          <li>Ability to test alternate prices before commercial sign-off</li>
+          <li>Portfolio-level visibility combined with SKU-level detail</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel soft">
+      <div class="label">User Workflow</div>
+      <div class="flow">
+        <div class="step">
+          <div class="num">01</div>
+          <h3>Import dataset</h3>
+          <p class="small">Workbook sheets such as NEW, NEW (2), and Pricing Engine V1 are read and normalized.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h3>Generate recommendation</h3>
+          <p class="small">The engine selects the best action and suggested price for each SKU.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h3>Explain the drivers</h3>
+          <p class="small">Users inspect margin, competitor pricing, stock cover, and source workbook context.</p>
+        </div>
+        <div class="step">
+          <div class="num">04</div>
+          <h3>Run simulation</h3>
+          <p class="small">Alternative prices can be tested to compare demand and profitability outcomes.</p>
+        </div>
+        <div class="step">
+          <div class="num">05</div>
+          <h3>Review and act</h3>
+          <p class="small">Teams use the queue, flagged SKUs, and agent review panel to prioritize execution.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="kpi blue">
+        <div class="label">Decision Types</div>
+        <div class="kpi-value">3</div>
+        <p class="small">Increase, decrease, hold</p>
+      </div>
+      <div class="kpi green">
+        <div class="label">Core Simulation Metrics</div>
+        <div class="kpi-value">5</div>
+        <p class="small">Volume, units, revenue, margin $, margin %</p>
+      </div>
+      <div class="kpi orange">
+        <div class="label">Main Data Signals</div>
+        <div class="kpi-value">10+</div>
+        <p class="small">Price, cost, market, flags, inventory, dates</p>
+      </div>
+      <div class="kpi rose">
+        <div class="label">Review Surfaces</div>
+        <div class="kpi-value">4</div>
+        <p class="small">Dashboard, queue, SKU detail, agent review</p>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      This summary is intended for stakeholder review and solution overview. Page 2 contains technical details on architecture, simulation logic, and current implementation choices.
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="hero">
+      <div class="eyebrow">Technical Detail</div>
+      <h1>How the system is built and how the recommendation logic works.</h1>
+      <p class="lede">
+        The current implementation is a local full-stack application with a FastAPI backend, a React frontend, workbook
+        parsing logic, a recommendation engine, and a simulation module that estimates the effect of price changes.
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="label">Architecture</div>
+        <table class="tech-table">
+          <tr>
+            <td>Frontend</td>
+            <td>React + Vite interface for dashboard, SKU queue, SKU detail, chat, and manual simulation.</td>
+          </tr>
+          <tr>
+            <td>Backend API</td>
+            <td>FastAPI service that loads the active dataset, generates recommendations, and serves dashboard / SKU endpoints.</td>
+          </tr>
+          <tr>
+            <td>Data loader</td>
+            <td>Workbook parsing logic that extracts supported sheets and maps raw columns into typed SKU records.</td>
+          </tr>
+          <tr>
+            <td>Decision engine</td>
+            <td>Candidate-price evaluation using margin, market gap, revenue impact, margin-dollar impact, and business guardrails.</td>
+          </tr>
+          <tr>
+            <td>Simulation engine</td>
+            <td>Rule-based elasticity model that estimates unit change and commercial outcomes at a proposed price.</td>
+          </tr>
+          <tr>
+            <td>Vector / LLM layer</td>
+            <td>Local vector store for recommendation context plus optional LLM support for SKU-level question answering.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="panel blue">
+        <div class="label">Current Logic Highlights</div>
+        <ul>
+          <li>Demand elasticity is estimated from KVI status, promo status, stock cover, market gap, and source pricing flags.</li>
+          <li>The engine scores multiple candidate prices rather than applying a single fixed rule.</li>
+          <li>Recommendations are constrained by margin floor, market distance, and sensible move size.</li>
+          <li>Simulation outputs include rounded-up expected units sold and projected gross margin percentage.</li>
+          <li>Workbook-driven fields such as stock cover and inventory interpretation are now read from updated sheet formats.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Recommendation and Simulation Formula Summary</div>
+      <div class="grid-3">
+        <div class="kpi blue">
+          <div class="label">Expected Volume Change</div>
+          <p class="small">Price change % × estimated demand elasticity</p>
+        </div>
+        <div class="kpi green">
+          <div class="label">Expected Units Sold</div>
+          <p class="small">Last week units × (1 + expected volume change), rounded up</p>
+        </div>
+        <div class="kpi orange">
+          <div class="label">Expected Revenue Impact</div>
+          <p class="small">Projected revenue − current revenue</p>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:10px">
+        <div class="kpi rose">
+          <div class="label">Expected Margin Impact</div>
+          <p class="small">Projected gross profit − current gross profit</p>
+        </div>
+        <div class="kpi blue">
+          <div class="label">Projected Margin</div>
+          <p class="small">(Proposed price − cost) / proposed price</p>
+        </div>
+        <div class="kpi green">
+          <div class="label">Recommendation Choice</div>
+          <p class="small">Best-scoring candidate after revenue, margin, market, and guardrail checks</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel soft">
+        <div class="label">Operational Benefits</div>
+        <ul>
+          <li>Analysts can explain recommendations with evidence rather than static rules alone.</li>
+          <li>Pricing decisions are linked to commercial impact, not just competitor gap.</li>
+          <li>The interface helps teams move from portfolio review to SKU action without changing tools.</li>
+          <li>Workbook refreshes can be incorporated quickly through supported sheet mappings.</li>
+        </ul>
+      </div>
+      <div class="panel soft">
+        <div class="label">Current Scope and Next Enhancements</div>
+        <ul>
+          <li>Rule-based elasticity can later be calibrated with historical price / sales data.</li>
+          <li>Confidence scoring can be refined using backtesting accuracy.</li>
+          <li>Executive reporting can be expanded with exportable summaries and approval workflows.</li>
+          <li>Recommendation governance can include category-specific rules and commercial override logging.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Prepared as a concise two-page overview of the current VAI Pricing Agent implementation. Source file is editable HTML so the brief can be revised or re-exported as the system evolves.
+    </div>
+  </section>
+</body>
+</html>
