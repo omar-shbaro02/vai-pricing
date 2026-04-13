@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import AgentReviewPanel from "../components/AgentReviewPanel";
 import Filters from "../components/Filters";
-import KPIcard from "../components/KPIcard";
+import PortfolioCharts from "../components/PortfolioCharts";
 import SKUtable from "../components/SKUtable";
 import { fetchAgentReview, fetchDashboard, fetchSKUs, runAgent } from "../services/api";
 
@@ -133,16 +133,6 @@ export default function Dashboard({ tableOnly = false }) {
     return <StatePanel tone="error">{error}</StatePanel>;
   }
 
-  const overviewStats = dashboard
-    ? [
-        { label: "SKUs analyzed", value: dashboard.total_skus_analyzed, tone: "blue" },
-        { label: "Actions recommended", value: dashboard.recommended_price_changes, tone: "neutral" },
-        { label: "Overpriced vs market", value: `${dashboard.overpriced_percentage.toFixed(1)}%`, tone: "amber" },
-        { label: "Average margin", value: `${dashboard.average_margin.toFixed(1)}%`, tone: "green" },
-        { label: "KVI compliance", value: `${dashboard.kvi_compliance_score.toFixed(1)}%`, tone: "red" },
-      ]
-    : [];
-
   return (
     <div className="space-y-5">
       {!tableOnly && dashboard && (
@@ -166,10 +156,8 @@ export default function Dashboard({ tableOnly = false }) {
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-              {overviewStats.map((item) => (
-                <KPIcard key={item.label} label={item.label} value={item.value} tone={item.tone} />
-              ))}
+            <div className="mt-5">
+              <PortfolioCharts dashboard={dashboard} review={review} />
             </div>
           </div>
 
