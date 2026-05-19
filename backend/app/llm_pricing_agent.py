@@ -93,7 +93,7 @@ class LLMPricingAgent:
         if not answer:
             answer = "I reviewed the SKU context but could not produce a final answer."
 
-        return answer, response.id, decision_update
+        return self._ensure_bullet_points(answer), response.id, decision_update
 
     def _build_initial_input(
         self,
@@ -113,7 +113,8 @@ class LLMPricingAgent:
                             "the source of truth. Explain studies, compare the current app decision to the workbook "
                             "signals, and if the user explicitly asks to change, override, revise, or replace the "
                             "decision or next steps, call the apply_decision_override tool. "
-                            "Do not invent workbook fields that are not in context. Be concrete and commercial."
+                            "Do not invent workbook fields that are not in context. Be concrete and commercial. "
+                            "Format every final answer as concise bullet points using '-' at the start of each line."
                         ),
                     }
                 ],
@@ -215,3 +216,14 @@ class LLMPricingAgent:
                 "additionalProperties": False,
             },
         }
+
+    @staticmethod
+    def _ensure_bullet_points(answer: str) -> str:
+        lines = [line.strip() for line in answer.splitlines() if line.strip()]
+        if not lines:
+            return "- I reviewed the SKU context but could not produce a final answer."
+
+        if all(line.startswith(("-", "*")) for line in lines):
+            return "\n".join(f"- {line[1:].strip()}" for line in lines)
+
+        return "\n".join(f"- {line}" for line in lines)

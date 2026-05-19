@@ -484,7 +484,7 @@ def chat_about_sku(sku_id: str, request: SKUChatRequest) -> SKUChatResponse:
         return SKUChatResponse(
             sku=sku_id,
             question=request.question,
-            answer=f"{answer}\n\nLLM pricing chat is not active: {exc}",
+            answer=f"{answer}\n- LLM pricing chat is not active: {exc}",
             used_llm=False,
         )
 

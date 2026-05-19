@@ -90,7 +90,7 @@ export default function SKUChatbot({ skuId, productName, onDecisionUpdated }) {
             className={`rounded-[1rem] px-4 py-3 text-sm leading-6 ${
               message.role === "user"
                 ? "ml-auto max-w-[34rem] bg-[#16324f] text-white"
-                : "max-w-[46rem] border border-slate-200 bg-white text-slate-700"
+                : "max-w-[46rem] whitespace-pre-wrap border border-slate-200 bg-white text-slate-700"
             }`}
           >
             {message.content}

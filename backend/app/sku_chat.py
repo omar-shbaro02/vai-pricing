@@ -15,57 +15,75 @@ def answer_sku_question(record: SKURecord, recommendation: RecommendationRecord,
     simulation = summarize_simulation(record, recommendation.suggested_price)
 
     if any(term in normalized for term in ["why", "reason", "rationale", "explain", "obtained"]):
-        return (
-            f"The strategy is `{direction}` because {recommendation.reason}. "
-            f"Current price is ${record.tawfeer_price:.2f}, the suggested price is ${recommendation.suggested_price:.2f}, "
-            f"and confidence is {recommendation.confidence * 100:.0f}%."
+        return _format_bullets(
+            [
+                f"Strategy: `{direction}`.",
+                f"Why: {recommendation.reason}.",
+                f"Current price: ${record.tawfeer_price:.2f}.",
+                f"Suggested price: ${recommendation.suggested_price:.2f}.",
+                f"Confidence: {recommendation.confidence * 100:.0f}%.",
+            ]
         )
 
     if any(term in normalized for term in ["margin", "gm", "profit", "floor"]):
-        return (
-            f"Current margin is {current_margin:.2f}% and the configured floor is {margin_floor:.2f}%. "
-            f"At the suggested price of ${recommendation.suggested_price:.2f}, the projected margin is "
-            f"{simulation['projected_margin_percent']:.2f}%."
+        return _format_bullets(
+            [
+                f"Current margin: {current_margin:.2f}%.",
+                f"Margin floor: {margin_floor:.2f}%.",
+                f"Projected margin at ${recommendation.suggested_price:.2f}: {simulation['projected_margin_percent']:.2f}%.",
+            ]
         )
 
     if any(term in normalized for term in ["market", "competitor", "benchmark", "gap", "reference"]):
-        return (
-            f"The market reference price is ${reference_price:.2f}. "
-            f"Tawfeer is currently {price_gap:.2f}% {'above' if price_gap >= 0 else 'below'} that reference. "
-            f"Competitor prices are Carrefour ${record.carrefour_price:.2f}, Spinneys ${record.spinneys_price:.2f}, "
-            f"and MetroMart ${record.metromart_price:.2f}."
+        return _format_bullets(
+            [
+                f"Market reference price: ${reference_price:.2f}.",
+                f"Tawfeer is {abs(price_gap):.2f}% {'above' if price_gap >= 0 else 'below'} the market reference.",
+                f"Carrefour price: ${record.carrefour_price:.2f}.",
+                f"Spinneys price: ${record.spinneys_price:.2f}.",
+                f"MetroMart price: ${record.metromart_price:.2f}.",
+            ]
         )
 
     if any(term in normalized for term in ["inventory", "stock", "cover", "units sold", "demand", "volume"]):
         stock_cover = record.stock_cover if record.stock_cover is not None else (
             record.inventory_level / max(record.units_sold_last_week, 1)
         )
-        return (
-            f"Inventory level is {record.inventory_level}, units sold last week were {record.units_sold_last_week}, "
-            f"and stock cover is {stock_cover:.2f}. "
-            f"Inventory interpretation is: {record.inventory_interpretation or 'No special inventory note'}."
+        return _format_bullets(
+            [
+                f"Inventory level: {record.inventory_level}.",
+                f"Units sold last week: {record.units_sold_last_week}.",
+                f"Stock cover: {stock_cover:.2f}.",
+                f"Inventory interpretation: {record.inventory_interpretation or 'No special inventory note'}.",
+            ]
         )
 
     if any(term in normalized for term in ["simulate", "impact", "if", "change price", "new price", "suggested price"]):
-        return (
-            f"Using the suggested price of ${recommendation.suggested_price:.2f}, the current simulation projects "
-            f"{simulation['expected_volume_change']:.2f}% volume change, "
-            f"${simulation['expected_revenue_impact']:.2f} revenue impact, and "
-            f"${simulation['expected_margin_impact']:.2f} margin impact."
+        return _format_bullets(
+            [
+                f"Simulation price: ${recommendation.suggested_price:.2f}.",
+                f"Expected volume change: {simulation['expected_volume_change']:.2f}%.",
+                f"Expected revenue impact: ${simulation['expected_revenue_impact']:.2f}.",
+                f"Expected margin impact: ${simulation['expected_margin_impact']:.2f}.",
+            ]
         )
 
     if any(term in normalized for term in ["increase", "decrease", "hold", "recommendation", "action", "next step"]):
-        return (
-            f"The current recommendation is to `{direction}`. "
-            f"Move from ${record.tawfeer_price:.2f} to ${recommendation.suggested_price:.2f}. "
-            f"The main driver is: {recommendation.reason}."
+        return _format_bullets(
+            [
+                f"Recommendation: `{direction}`.",
+                f"Move from ${record.tawfeer_price:.2f} to ${recommendation.suggested_price:.2f}.",
+                f"Main driver: {recommendation.reason}.",
+            ]
         )
 
-    return (
-        f"For {record.product_name} ({record.sku}), the recommended action is to `{direction}` from "
-        f"${record.tawfeer_price:.2f} to ${recommendation.suggested_price:.2f}. "
-        f"This is based on margin, market position, and inventory context. "
-        f"You can ask about margin, competitors, inventory, simulation impact, or why this strategy was chosen."
+    return _format_bullets(
+        [
+            f"SKU: {record.product_name} ({record.sku}).",
+            f"Recommended action: `{direction}` from ${record.tawfeer_price:.2f} to ${recommendation.suggested_price:.2f}.",
+            "Decision basis: margin, market position, and inventory context.",
+            "You can ask about margin, competitors, inventory, simulation impact, or why this strategy was chosen.",
+        ]
     )
 
 
@@ -75,3 +93,8 @@ def _recommendation_direction(current_price: float, suggested_price: float) -> s
     if suggested_price < current_price:
         return "decrease"
     return "hold"
+
+
+def _format_bullets(items: list[str]) -> str:
+    cleaned = [item.strip() for item in items if item and item.strip()]
+    return "\n".join(f"- {item}" for item in cleaned)

@@ -19,6 +19,7 @@ export default function SimulationPanel({
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [databasePlaceholderMessage, setDatabasePlaceholderMessage] = useState("");
 
   useEffect(() => {
     setProposedPrice(suggestedPrice ?? 0);
@@ -28,6 +29,7 @@ export default function SimulationPanel({
     event.preventDefault();
     setLoading(true);
     setError("");
+    setDatabasePlaceholderMessage("");
 
     try {
       const response = await runSimulation({
@@ -40,6 +42,12 @@ export default function SimulationPanel({
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleDatabasePriceChange() {
+    setDatabasePlaceholderMessage(
+      `Placeholder only: this will update SKU ${skuId} to $${Number(proposedPrice || 0).toFixed(2)} once the database connection is added.`,
+    );
   }
 
   const hasResult = result != null;
@@ -91,9 +99,21 @@ export default function SimulationPanel({
           >
             {loading ? "Running..." : "Run simulation"}
           </button>
+          <button
+            type="button"
+            onClick={handleDatabasePriceChange}
+            className="w-full rounded-full border border-dashed border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+          >
+            Change Price In Database
+          </button>
         </form>
 
         {error && <p className="mt-4 text-sm text-rose-700">{error}</p>}
+        {databasePlaceholderMessage && (
+          <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {databasePlaceholderMessage}
+          </p>
+        )}
 
         {hasResult && (
           <div className="mt-5 space-y-4">
