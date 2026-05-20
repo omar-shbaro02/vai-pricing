@@ -11,6 +11,10 @@ app = FastAPI(title="VAI Pricing Agent", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=[
+        "https://pricing-agent.netlify.app",
+        "https://main--pricing-agent.netlify.app",
+    ],
     allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
